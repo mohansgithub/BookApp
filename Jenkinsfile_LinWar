@@ -1,0 +1,26 @@
+pipeline {
+    agent {
+    label 'AWSNode'
+    }
+    tools {
+                maven 'Maven_3911'
+                jdk 'JDK17'
+            }
+    stages {
+        stage('Pull the Source Code') {
+            steps {
+                git branch: 'master', url: 'https://github.com/mohansgithub/BookApp.git'
+            }
+        }
+        stage('Build the Source Code') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        stage('Deploy WAR File') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: '40dcd514-f65c-4cef-8317-e688a8504cf6', path: '', url: 'http://localhost:8080')], contextPath: '/BookApp', war: '**/*.war'
+            }
+        }
+    }
+}
