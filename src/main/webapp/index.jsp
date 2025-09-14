@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="LoginBox" style="height: max-content;">
-    <div class="title">Docker is Amazong in the DevOps World</div>
+    <div class="title">Docker week is Diwali Week and it is Amazong in the DevOps World</div>
     <form method="post" action="Login">
         <div class="User-details">
             <div class="input-box">
