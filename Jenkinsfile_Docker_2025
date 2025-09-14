@@ -1,0 +1,56 @@
+pipeline {
+	agent { node { label 'AWSNode' } } 
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+		jdk 'JDK17'
+		maven 'Maven_3911'
+		
+    }
+  environment {
+    DOCKERREPO_NAME = "bookapplication"
+    myDockerhub = "mohanraj123"
+  }
+    stages {
+        stage('CleanWS') {
+            steps {
+			cleanWs()
+            }
+        }
+		stage('Clone the repo') {
+            steps {
+			git 'https://github.com/mohansgithub/BookApp.git'
+            }
+        }
+		stage('maven build'){
+            steps {
+  			sh 'mvn clean package'
+			}
+        }
+		stage('docker deployment'){
+            steps {
+			withCredentials([usernamePassword(credentialsId: 'a5f262f6-c681-4959-b5e7-035182ddd855', passwordVariable: 'DOCKERHUB_PASS', usernameVariable: 'DOCKERHUB_NAME')]) {
+			  sh '''
+			       docker login -u ${DOCKERHUB_NAME} -p ${DOCKERHUB_PASS}  
+                   sudo docker build -t ${DOCKERHUB_NAME}/${DOCKERREPO_NAME}:${BUILD_NUMBER} .
+                   sudo docker push ${DOCKERHUB_NAME}/${DOCKERREPO_NAME}:${BUILD_NUMBER}
+                   sudo docker images
+                   sudo docker ps -f name=${myDockerRepoName} -q | xargs --no-run-if-empty sudo docker container stop
+                   sudo docker container ls -a -fname=${myDockerRepoName} -q | xargs -r sudo docker container rm
+                   sudo docker system prune -f
+                   sudo docker run -d -p 8080:8080 ${DOCKERHUB_NAME}/${DOCKERREPO_NAME}:${BUILD_NUMBER}
+
+              '''
+            }
+			}
+        }
+		stage('mvn test') {
+            steps {
+			echo "my step";
+
+            }
+        }	
+    }
+}
+
