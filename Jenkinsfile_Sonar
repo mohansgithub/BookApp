@@ -1,1 +1,63 @@
+pipeline {
+    agent any
 
+    environment {
+        // The SonarQube environment name configured in Jenkins
+        SONARQUBE_ENV = 'SonarQubeServer'
+        // The project key registered in SonarQube
+        SONAR_PROJECT_KEY = 'myapp'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/mohansgithub/FLIPAMAZON.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                // Example for Maven project
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    // Example for Maven project
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
+                    
+                    // OR for non-Maven projects, use the scanner directly:
+                    // sh '''
+                    // sonar-scanner \
+                    //   -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    //   -Dsonar.sources=. \
+                    //   -Dsonar.host.url=$SONAR_HOST_URL \
+                    //   -Dsonar.login=$SONAR_AUTH_TOKEN
+                    // '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                echo 'Checking SonarQube Quality Gate result...'
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ SonarQube analysis completed successfully!'
+        }
+        failure {
+            echo '❌ Build failed or Quality Gate not passed!'
+        }
+    }
+}
