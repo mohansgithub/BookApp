@@ -59,13 +59,13 @@
 <distributionManagement>
     <repository>
         <id>central</id>
-        <name>a0zwbg6jb0qbl-artifactory-primary-0-releases</name>
-        <url>https://upgradeyourskills1.jfrog.io/artifactory/upgrade_maven_virtual</url>
+        <name>mt-frontend-ep-petclinic-maven_local-releases</name>
+        <url>https://mohanrajdevops.jfrog.io/artifactory/petclinic-maven_local</url>
     </repository>
     <snapshotRepository>
         <id>snapshots</id>
-        <name>a0zwbg6jb0qbl-artifactory-primary-0-snapshots</name>
-        <url>https://upgradeyourskills1.jfrog.io/artifactory/upgrade_maven_virtual</url>
+        <name>mt-frontend-ep-petclinic-maven_local-snapshots</name>
+        <url>https://mohanrajdevops.jfrog.io/artifactory/petclinic-maven_local</url>
     </snapshotRepository>
 </distributionManagement>
 </project>
