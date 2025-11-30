@@ -8,14 +8,19 @@ pipeline {
 
         stage('Configure JFrog') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'e6d8c3b4-c1c4-4012-b0ce-aba6bf5b83ae',
+                                                 usernameVariable: 'JF_USER',
+                                                 passwordVariable: 'JF_PASS')]) {
                 bat '''
-                    jf.exe config add art --url=https://mohanrajdevops.jfrog.io/ --user=mohanraj.vellingiri@zohomail.in --password=cmVmdGtuOjAxOjE3OTYwMDc4OTc6OE1hYU5scE90cklMcVlCNnQ2WnZmOWQ5RGdu --interactive=false
+                jf.exe config edit art --url=https://mohanrajdevops.jfrog.io/ --user=%JF_USER% --password=%JF_PASS% --interactive=false
                 '''
+            }
             }
         }
 
         stage('Download WAR File') {
             steps {
+                
                 bat '''
                     if not exist downloads mkdir downloads
                     jf.exe rt dl "petclinic-maven_local/com/BookApp/BookApp/3.0/BookApp-3.0.war" "downloads/"
