@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    tools {
+        jfrog 'jfrogcli'     // only works if jfrogcli tool installed in Jenkins
+    }
+
+    stages {
+
+        stage('Configure JFrog') {
+            steps {
+                bat '''
+                    jf.exe config add art --url=https://mohanrajdevops.jfrog.io/ --user=mohanraj.vellingiri@zohomail.in --password=cmVmdGtuOjAxOjE3OTYwMDc4OTc6OE1hYU5scE90cklMcVlCNnQ2WnZmOWQ5RGdu --interactive=false
+                '''
+            }
+        }
+
+        stage('Download WAR File') {
+            steps {
+                bat '''
+                    if not exist downloads mkdir downloads
+                    jf.exe rt dl "petclinic-maven_local/com/BookApp/BookApp/3.0/BookApp-3.0.war" "downloads/"
+                '''
+            }
+        }
+    }
+}
