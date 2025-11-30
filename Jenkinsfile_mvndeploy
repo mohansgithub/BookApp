@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    tools {
+          git 'git'
+          maven 'Maven'
+          jdk 'JDK17'
+     }    
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/mohansgithub/BookApp.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                // Example for Maven project
+                bat 'mvn clean deploy -s C:\\Users\\mohan\\.m2\\settings.xml'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo '✅ SonarQube analysis completed successfully!'
+        }
+        failure {
+            echo '❌ Build failed or Quality Gate not passed!'
+        }
+    }
+}
