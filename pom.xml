@@ -6,7 +6,7 @@
 
     <groupId>com.BookApp</groupId>
     <artifactId>BookApp</artifactId>
-    <version>3.0</version>
+    <version>4.0</version>
     <name>BookApp</name>
     <packaging>war</packaging>
 
