@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    environment {
+        ARTIFACTORY_ID = 'jfrog-server'
+    }
+
+    stages {
+        stage('Download from JFrog') {
+            steps {
+                script {
+                    // Connect to JFrog server
+                    def server = Artifactory.server(ARTIFACTORY_ID)
+
+                    // Define download spec
+                    def downloadSpec = """{
+                      "files": [{
+                        "pattern": "maven-local/myapp/1.0.0/myapp-1.0.0.war",
+                        "target": "downloads/"
+                      }]
+                    }"""
+
+                    // Download artifact
+                    server.download(downloadSpec)
+                }
+            }
+        }
+    }
+}
